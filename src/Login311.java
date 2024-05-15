@@ -43,6 +43,8 @@ public class Login311 extends JFrame {
                 validacion=1;
                 if(validacion==1){
                     JOptionPane.showMessageDialog(null, "Validación Exitosa");
+                    Usuario enlazar = new Usuario();
+                    enlazar.mostrarVentanaUsuario();
                 }
             }else{
                 JOptionPane.showMessageDialog(null, "Usuario sin permisos de administración");
@@ -62,5 +64,3 @@ public class Login311 extends JFrame {
 }
 }
 
-//conectar
-ps = conexion.preapareStatement("Insert int administradores(usuario,contrasena) values (?,?,?)");

@@ -13,6 +13,8 @@ public class Usuario extends JFrame {
     private JTable tablaDatos;
     private JPanel panelUsuario;
     private JList lista;
+    private JButton actualizarBoton;
+    private JButton eliminarBoton;
     Connection conexion;
     DefaultListModel mod = new DefaultListModel<>();
     PreparedStatement ps;
@@ -43,6 +45,26 @@ public class Usuario extends JFrame {
                 }
             }
         });
+        actualizarBoton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    actualizar();
+                } catch (SQLException ex) {
+
+                }
+            }
+        });
+        eliminarBoton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    eliminar();
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
     }
 
     void conectar(){
@@ -55,6 +77,7 @@ public class Usuario extends JFrame {
 
     void consultar() throws SQLException{
         conectar();
+        modTab.setRowCount(0);
         tablaDatos.setModel(modTab);
         st2 = conexion.createStatement();
         r = st2.executeQuery("Select id, nombre, rol from usuarios");
@@ -80,6 +103,44 @@ public class Usuario extends JFrame {
             idText.setText("");
             nombreText.setText("");
             rolText.setText("");
+
+            consultar();
+
+        }
+    }
+    void eliminar() throws SQLException{
+        conectar();
+        ps = conexion.prepareStatement("delete from usuarios where id=?");
+        ps.setInt(1,Integer.parseInt(idText.getText()));
+        if(ps.executeUpdate()>0){
+            lista.setModel(mod);
+            mod.removeAllElements();
+            mod.addElement("Elemento eliminado");
+
+            idText.setText("");
+            nombreText.setText("");
+            rolText.setText("");
+
+            consultar();
+
+        }
+    }
+    void actualizar() throws SQLException{
+        conectar();
+        ps = conexion.prepareStatement("update usuarios set nombre=?, rol=? where id=?");
+        ps.setString(1, nombreText.getText());
+        ps.setString(2, rolText.getText());
+        ps.setInt(3,Integer.parseInt(idText.getText()));
+        if(ps.executeUpdate()>0){
+            lista.setModel(mod);
+            mod.removeAllElements();
+            mod.addElement("Elemento actualizado");
+
+            idText.setText("");
+            nombreText.setText("");
+            rolText.setText("");
+
+            consultar();
 
         }
     }
